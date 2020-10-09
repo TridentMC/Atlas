@@ -48,11 +48,6 @@ val buildFull = tasks.register<ShadowJar>("buildFull") {
     relocate("org.objectweb", "com.tridevmc.atlas.repack.org.objectweb")
 }
 
-artifacts {
-    add("archives", buildSlim)
-    add("archives", buildFull)
-}
-
 tasks.build {
     dependsOn(buildSlim, buildFull)
 }
@@ -68,19 +63,25 @@ tasks.test {
 
 if (file("private.gradle").exists()) {
     apply(plugin = "maven-publish")
+    artifacts {
+        add("archives", buildSlim)
+        add("archives", buildFull)
+    }
+    val artifactSlim = artifacts.add("archives", buildSlim)
+    val artifactFull = artifacts.add("archives", buildFull)
     configure<PublishingExtension> {
         publications {
             create<MavenPublication>("atlas-slim") {
                 groupId = project.group as String
                 artifactId = "atlas-slim"
                 version = project.version as String + project.ext.get("versionTag")
-                artifact(buildSlim)
+                artifact(artifactSlim)
             }
             create<MavenPublication>("atlas-full") {
                 groupId = project.group as String
                 artifactId = "atlas-full"
                 version = project.version as String + project.ext.get("versionTag")
-                artifact(buildFull)
+                artifact(artifactFull)
             }
         }
     }
