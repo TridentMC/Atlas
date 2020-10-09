@@ -28,27 +28,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
 }
 
-if (file("private.gradle").exists()) {
-    apply(plugin = "maven-publish")
-    configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("atlas-slim") {
-                groupId = project.group as String
-                artifactId = "atlas-slim"
-                version = project.version as String + project.ext.get("versionTag")
-                artifact(buildSlim)
-            }
-            create<MavenPublication>("atlas-full") {
-                groupId = project.group as String
-                artifactId = "atlas-full"
-                version = project.version as String + project.ext.get("versionTag")
-                artifact(buildFull)
-            }
-        }
-    }
-    apply(from = "private.gradle")
-}
-
 tasks.jar {
     manifest {
         attributes("Main-Class" to "com.tridevmc.atlas.Atlas")
@@ -85,6 +64,27 @@ tasks.test {
     }
     workingDir = File("test")
     workingDir.mkdir()
+}
+
+if (file("private.gradle").exists()) {
+    apply(plugin = "maven-publish")
+    configure<PublishingExtension> {
+        publications {
+            create<MavenPublication>("atlas-slim") {
+                groupId = project.group as String
+                artifactId = "atlas-slim"
+                version = project.version as String + project.ext.get("versionTag")
+                artifact(buildSlim)
+            }
+            create<MavenPublication>("atlas-full") {
+                groupId = project.group as String
+                artifactId = "atlas-full"
+                version = project.version as String + project.ext.get("versionTag")
+                artifact(buildFull)
+            }
+        }
+    }
+    apply(from = "private.gradle")
 }
 
 configure<JavaPluginConvention> {
