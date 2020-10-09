@@ -60,8 +60,8 @@ public class MojangMappingsReader implements IMappingsReader {
                 matches.add(matcher.group());
             }
             if (!line.startsWith(" ")) {
-                String mappedName = matches.get(0).replace(".", "/");
-                String obfuscatedName = matches.get(2).replace(".", "/");
+                String mappedName = dotsToSlash(matches.get(0));
+                String obfuscatedName = dotsToSlash(matches.get(2));
                 if (currentType != null)
                     Logger.info("Finished building type {}", currentType);
                 if (!obfuscatedName.contains("$")) {
@@ -78,17 +78,17 @@ public class MojangMappingsReader implements IMappingsReader {
                 if (line.contains("(")) {
                     // Methods represent args with brackets, this must be a method.
                     int offset = line.contains(":") ? 2 : 0;
-                    String returnType = dotsToSlash(matches.get(offset).replace(".", "/"));
-                    String mappedName = matches.get(offset + 1).replace(".", "/");
-                    String obfuscatedName = matches.get(matches.size() - 1).replace(".", "/");
+                    String returnType = dotsToSlash(matches.get(offset));
+                    String mappedName = dotsToSlash(matches.get(offset + 1));
+                    String obfuscatedName = dotsToSlash(matches.get(matches.size() - 1));
                     List<String> arguments = matches.subList(offset + 2, matches.size() - 2).stream().map(this::dotsToSlash).collect(Collectors.toList());
                     AtlasMethod.Builder methodBuilder = new AtlasMethod.Builder(obfuscatedName, mappedName, returnType, arguments);
                     currentType.addMember(methodBuilder);
                 } else {
                     // Fields
-                    String type = dotsToSlash(matches.get(0).replace(".", "/"));
-                    String mappedName = matches.get(1).replace(".", "/");
-                    String obfuscatedName = matches.get(matches.size() - 1).replace(".", "/");
+                    String type = dotsToSlash(matches.get(0));
+                    String mappedName = dotsToSlash(matches.get(1));
+                    String obfuscatedName = dotsToSlash(matches.get(matches.size() - 1));
                     AtlasField.Builder fieldBuilder = new AtlasField.Builder(obfuscatedName, mappedName, type);
                     currentType.addMember(fieldBuilder);
                 }
