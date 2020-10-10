@@ -6,6 +6,7 @@ import com.tridevmc.atlas.mappings.AtlasField;
 import com.tridevmc.atlas.mappings.AtlasMappings;
 import com.tridevmc.atlas.mappings.AtlasMethod;
 import com.tridevmc.atlas.mappings.AtlasType;
+import com.tridevmc.atlas.util.StringFixer;
 import org.pmw.tinylog.Logger;
 
 import java.time.OffsetDateTime;
@@ -16,6 +17,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static com.tridevmc.atlas.util.StringFixer.dotsToSlash;
 
 /**
  * Reads Mojang mapping files and converts them into an AtlasMappings object to use with a Remapper.
@@ -81,7 +84,7 @@ public class MojangMappingsReader implements IMappingsReader {
                     String returnType = dotsToSlash(matches.get(offset));
                     String mappedName = dotsToSlash(matches.get(offset + 1));
                     String obfuscatedName = dotsToSlash(matches.get(matches.size() - 1));
-                    List<String> arguments = matches.subList(offset + 2, matches.size() - 2).stream().map(this::dotsToSlash).collect(Collectors.toList());
+                    List<String> arguments = matches.subList(offset + 2, matches.size() - 2).stream().map(StringFixer::dotsToSlash).collect(Collectors.toList());
                     AtlasMethod.Builder methodBuilder = new AtlasMethod.Builder(obfuscatedName, mappedName, returnType, arguments);
                     currentType.addMember(methodBuilder);
                 } else {
@@ -96,9 +99,5 @@ public class MojangMappingsReader implements IMappingsReader {
         }
 
         return mappingsBuilder.build();
-    }
-
-    private String dotsToSlash(String str) {
-        return str.replace(".", "/");
     }
 }

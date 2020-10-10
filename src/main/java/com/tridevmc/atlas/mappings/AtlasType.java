@@ -34,6 +34,21 @@ public class AtlasType extends AtlasMember {
             this.children = Lists.newArrayList();
         }
 
+        public Builder getChild(String obfuscatedName) {
+            for(AtlasType.Builder b : children) {
+                if(b.getObfuscatedName().equals(obfuscatedName)) return b;
+            }
+            throw new RuntimeException("unable to find " + obfuscatedName);
+        }
+
+        public String getObfuscatedName() {
+            return obfuscatedName;
+        }
+
+        public String getMappedName() {
+            return mappedName;
+        }
+
         public Builder addMember(IMemberBuilder<? extends AtlasMember> member) {
             this.members.add(member);
             return this;
